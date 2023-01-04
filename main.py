@@ -4,7 +4,8 @@ from fastapi import FastAPI, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from auth.auth import authenticate_user, ACCESS_TOKEN_EXPIRE_MINUTES, create_access_token, get_current_user
+from auth.auth import authenticate_user, create_access_token, get_current_user
+from auth.config import ACCESS_TOKEN_EXPIRE_MINUTES
 from auth.schemas import Token
 from sql_app.database import get_session
 from sql_app import crud
