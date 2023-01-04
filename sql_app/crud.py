@@ -1,5 +1,7 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
+
+from auth.encrypt import get_password_hash
 from . import models
 from . import schemas
 
@@ -15,8 +17,8 @@ async def get_user_by_email(db: AsyncSession, email: str):
 
 
 async def create_user(db: AsyncSession, user: schemas.UserCreate):
-    fake_hashed_password = user.password + "notreallyhashed"
-    db_user = models.User(email=user.email, hashed_password=fake_hashed_password)
+    hashed_password = get_password_hash(user.password)
+    db_user = models.User(email=user.email, hashed_password=hashed_password)
     db.add(db_user)
     await db.commit()
     return db_user
