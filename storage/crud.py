@@ -3,6 +3,7 @@ from sqlalchemy import select
 
 from auth.encrypt import get_password_hash
 from storage.models.account import User, ManualManager, ApiManager
+from storage.models.operation import ManualOperation
 from storage.schemas import account as account_schemas
 
 
@@ -40,5 +41,9 @@ async def create_api_manager(db: AsyncSession, user: User, create_func, *args, *
     return bank_api_manager
 
 
+async def get_operations(db: AsyncSession, user: User) -> list[ManualOperation]:
+    manager: ManualManager = await db.scalar(select(ManualManager).filter(ManualManager.user_id == user.id))
+    operations = await db.scalar(select(ManualOperation).filter(ManualOperation.manager_id == manager.id))
+    return operations
 
 

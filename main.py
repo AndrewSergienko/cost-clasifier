@@ -8,7 +8,7 @@ from auth.auth import authenticate_user, create_access_token, get_current_user
 from auth.config import ACCESS_TOKEN_EXPIRE_MINUTES
 from auth.schemas import Token
 from bankapi.monobank.crud import create_monobank_manager
-from storage.crud import create_manual_manager, create_api_manager
+from storage.crud import create_manual_manager, create_api_manager, get_operations
 from storage.database import get_session
 from storage import crud
 from storage.schemas import account as user_schemas
@@ -56,3 +56,9 @@ async def create_api_manager_view(params: dict[str, object], db: AsyncSession = 
         await create_api_manager(db, user, manager_defs[params['type']], **params)
         return {'status': 'ok'}
     return HTTPException(status_code=status.HTTP_400_BAD_REQUEST)
+
+
+@app.get("/operations", status_code=200)
+async def read_operations(db: AsyncSession = Depends(get_session), user: User = Depends(get_current_user)):
+    operations = await get_operations(db, user)
+    return operations

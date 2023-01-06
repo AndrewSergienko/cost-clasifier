@@ -1,5 +1,5 @@
-from sqlalchemy import Column, Integer, String, ForeignKey, event, and_, Table
-from sqlalchemy.orm import relationship, foreign, remote, backref
+from sqlalchemy import Column, Integer, String, ForeignKey
+from sqlalchemy.orm import relationship
 
 from storage.database import Base
 
@@ -15,24 +15,13 @@ class User(Base):
     api_managers = relationship("ApiManager")
 
 
-man_opers_assc = Table('man_opers_assc', Base.metadata,
-                       Column('man_manager_id', Integer, ForeignKey('manual_managers.id')),
-                       Column('operation_id', Integer, ForeignKey('operations.id'))
-                       )
-
-api_opers_assc = Table('api_opers_assc', Base.metadata,
-                       Column('api_manager_id', Integer, ForeignKey('api_managers.id')),
-                       Column('operation_id', Integer, ForeignKey('operations.id'))
-                       )
-
-
 class ManualManager(Base):
     __tablename__ = "manual_managers"
 
     id = Column(Integer, primary_key=True)
     user_id = Column(Integer, ForeignKey("users.id"))
 
-    operations = relationship("Operation", secondary=man_opers_assc)
+    operations = relationship("ManualOperation", back_populates="manager")
 
 
 class ApiManager(Base):
@@ -42,8 +31,6 @@ class ApiManager(Base):
     type = Column(String(50))
 
     user_id = Column(Integer, ForeignKey("users.id"))
-
-    operations = relationship("Operation", secondary=api_opers_assc)
 
     __mapper_args__ = {
         "polymorphic_identity": "api_manager",
