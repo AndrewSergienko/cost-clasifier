@@ -8,9 +8,9 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from auth.config import SECRET_KEY, ALGORITHM
 from auth.encrypt import verify_password
 from auth.schemas import TokenData
-from sql_app.crud import get_user_by_email
-from sql_app.database import get_session
-from sql_app.models import User
+from storage.crud import get_user_by_email
+from storage.database import get_session
+from storage.models.account import User
 
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
